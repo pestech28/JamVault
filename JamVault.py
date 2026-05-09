@@ -6,6 +6,7 @@ import random
 import math
 import time
 from PIL import Image, ImageDraw, ImageTk, ImageColor, ImageFont
+from tkinter import ttk
 
 class WADX:
     def __init__(self, root):
@@ -42,8 +43,13 @@ class WADX:
         file_menu.add_command(label="Load Main Library", command=lambda: self.load_playlist("library.m3u"))
         menubar.add_cascade(label="Files", menu=file_menu)
 
+        vis_menu = tk.Menu(menubar, tearoff=0, background='#d8d8d8')
+        vis_menu.add_command(label="Bar", command=vis_menu)
+        menubar.add_cascade(label="Visualizer", menu=vis_menu)
+
         tools_menu = tk.Menu(menubar, tearoff=0, background='#d8d8d8')
         tools_menu.add_command(label="Find", command=self.open_find_window)
+        #tools_menu.add_command(label="Settings", command=self.open_settings_window)
         menubar.add_cascade(label="Tools", menu=tools_menu)
 
         help_menu = tk.Menu(menubar, tearoff=0, background='#d8d8d8')
@@ -230,14 +236,14 @@ class WADX:
             self.temp_library = False
 
         if not os.path.isfile(filename):
-            messagebox.showwarning("Playlist Load", f"Playlist file not found:\n{filename}")
+            self.newlib()
             return
         self.playlist.clear()
         self.playlist_listbox.delete(0, tk.END)
         with open(filename, "r", encoding="utf-8") as f:
             lines = [line.strip() for line in f if line.strip()]
             if not lines or lines[0] != "#EXTM3U":
-                messagebox.showwarning("Playlist Error", "Invalid M3U playlist format.")
+                self.newlib()
                 return
             i = 1
             while i < len(lines) - 1:
@@ -268,6 +274,16 @@ class WADX:
         except Exception as e:
             messagebox.showerror("Save Error", f"Failed to save playlist:\n{str(e)}")
 
+    def newlib(self):
+        filename = "library.m3u" if self.temp_library else "library.m3u"
+        try:
+            with open(filename, "w", encoding="utf-8") as f:
+                f.write("#EXTM3U\n")
+                for path, name in self.playlist:
+                    f.write(f"#EXTINF:-1,{name}\n{path}\n")
+        except Exception as e:
+            messagebox.showerror("Save Error", f"Failed to save playlist:\n{str(e)}")
+
     def add_song_to_playlist(self, filepath):
         name = self.get_song_name_from_path(filepath)
         self.playlist.append([filepath, name])
@@ -275,7 +291,7 @@ class WADX:
         self.save_playlist()
 
     def add_songs(self):
-        filetypes = [("Audio files", "*.mp3 *.wav *.flac")]
+        filetypes = [("Audio files", "*.mp3 *.wav *.flac *.m4a *.ogg")]
         files = filedialog.askopenfilenames(title="Add Songs", filetypes=filetypes)
         if not files:
             return
@@ -477,14 +493,20 @@ class WADX:
         self.root.after(500, self.update_seekbar)
 
     def _on_end_reached(self, event):
+        self.root.after(1, self._handle_end_reached)
+
+    def _handle_end_reached(self):
         if self.loop_mode == 1:
             self.play_song_by_index(self.current_index)  # Loop current song
+
         elif self.shuffle_on:
             self.play_random_track()
+
         elif self.loop_mode == 2:
             next_index = (self.current_index + 1) % len(self.playlist) if self.playlist else -1
             if next_index != -1:
                 self.play_song_by_index(next_index)
+
         else:
             next_index = self.current_index + 1
             if next_index < len(self.playlist):
@@ -530,6 +552,7 @@ class WADX:
             self.find_window.lift()
             return
         self.find_window = tk.Toplevel(self.root)
+        self.find_window.resizable(False, False)
         self.find_window.title("Find")
         self.find_window.geometry("300x100")
         self.find_window.config(bg="#d8d8d8")
@@ -556,8 +579,31 @@ class WADX:
                 break
         self.find_window.lift()
 
+    def open_settings_window(self):
+        self.settings_window = tk.Toplevel(self.root)
+        self.settings_window.title("Settings")
+        self.settings_window.geometry("300x100")
+        self.settings_window.config(bg="#d8d8d8")
+        label = tk.Label(self.settings_window, text="Settings", bg="#d8d8d8")
+        label.pack(pady=5)
+        label = tk.Label(self.settings_window, text="Language", bg="#d8d8d8")
+        #label.pack(pady=5)
+        langchoice = ttk.Combobox(self.settings_window, width = 27, textvariable = "English")
+        # Adding combobox drop down list
+        langchoice['values'] = (' English', )
+        #langchoice.pack()
+        apply_butt = tk.Button(self.settings_window, text="Apply", command=self.applychange)
+        apply_butt.pack()
+
+    def applychange(self):
+        #update lang code here
+        #messagebox.showinfo("Settings", "To apply settings please restart JamVault.")
+        self.settings_window.destroy()
+        return 0
+        
+
     def show_about(self):
-        messagebox.showinfo("About", "JamVault Beta\nVersion: 0.8.1\nCreated by: Daniel Armstrong\n(C)2025 Daniel Armstrong")
+        messagebox.showinfo("About", "JamVault Beta\nVersion: 0.9.0\nCreated by: Daniel Armstrong\n(C)2025 Daniel Armstrong")
 
     def on_close(self):
         self.player.stop()
