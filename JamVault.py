@@ -14,7 +14,7 @@ class WADX:
         image = Image.open("icon.png")
         photo = ImageTk.PhotoImage(image)
         root.iconphoto(True, photo)
-        self.root.config(bg="#ece9d8")
+        self.root.config(bg="#d8d8d8")
         self.instance = vlc.Instance()
         self.player = self.instance.media_player_new()
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -32,21 +32,21 @@ class WADX:
 
         self.load_images()
 
-        menubar = tk.Menu(root, background='#ece9d8')
+        menubar = tk.Menu(root, background='#d8d8d8')
         root.config(menu=menubar)
 
-        file_menu = tk.Menu(menubar, tearoff=0, background='#ece9d8')
+        file_menu = tk.Menu(menubar, tearoff=0, background='#d8d8d8')
         file_menu.add_command(label="New Library", command=self.new_library)
         file_menu.add_command(label="Load Library", command=self.load_library_dialog)
         file_menu.add_command(label="Save", command=self.save_playlist_as)
         file_menu.add_command(label="Load Main Library", command=lambda: self.load_playlist("library.m3u"))
         menubar.add_cascade(label="Files", menu=file_menu)
 
-        tools_menu = tk.Menu(menubar, tearoff=0, background='#ece9d8')
+        tools_menu = tk.Menu(menubar, tearoff=0, background='#d8d8d8')
         tools_menu.add_command(label="Find", command=self.open_find_window)
         menubar.add_cascade(label="Tools", menu=tools_menu)
 
-        help_menu = tk.Menu(menubar, tearoff=0, background='#ece9d8')
+        help_menu = tk.Menu(menubar, tearoff=0, background='#d8d8d8')
         help_menu.add_command(label="About", command=self.show_about)
         menubar.add_cascade(label="Help", menu=help_menu)
 
@@ -56,34 +56,34 @@ class WADX:
                                 command=self.seek, showvalue=0, fg="#333333")
         self.seekbar.pack(pady=10)
 
-        control_panel = tk.Frame(root, background='#ece9d8')
+        control_panel = tk.Frame(root, background='#d8d8d8')
         control_panel.pack(pady=20)
 
-        self.prev_btn = tk.Button(control_panel, image=self.img_back, bg="#ece9d8", borderwidth=0,
+        self.prev_btn = tk.Button(control_panel, image=self.img_back, bg="#d8d8d8", borderwidth=0,
                                   command=self.prev_track)
         if not self.img_back:
             self.prev_btn.config(text="Prev")
         self.prev_btn.pack(side=tk.LEFT, padx=3)
 
-        self.play_pause_btn = tk.Button(control_panel, image=self.img_play, bg="#ece9d8", borderwidth=0,
+        self.play_pause_btn = tk.Button(control_panel, image=self.img_play, bg="#d8d8d8", borderwidth=0,
                                         command=self.play_pause)
         if not self.img_play:
             self.play_pause_btn.config(text="Play")
         self.play_pause_btn.pack(side=tk.LEFT, padx=3)
 
-        self.next_btn = tk.Button(control_panel, image=self.img_forward, bg="#ece9d8", borderwidth=0,
+        self.next_btn = tk.Button(control_panel, image=self.img_forward, bg="#d8d8d8", borderwidth=0,
                                   command=self.next_track)
         if not self.img_forward:
             self.next_btn.config(text="Next")
         self.next_btn.pack(side=tk.LEFT, padx=3)
 
-        self.loop_btn = tk.Button(control_panel, image=self.img_loop_off, bg="#ece9d8", borderwidth=0,
+        self.loop_btn = tk.Button(control_panel, image=self.img_loop_off, bg="#d8d8d8", borderwidth=0,
                                   command=self.toggle_loop_mode)
         if not self.img_loop_off:
             self.loop_btn.config(text="Loop Off")
         self.loop_btn.pack(side=tk.LEFT, padx=10)
 
-        self.shuffle_btn = tk.Button(control_panel, image=self.img_shuffle_off, bg="#ece9d8", borderwidth=0,
+        self.shuffle_btn = tk.Button(control_panel, image=self.img_shuffle_off, bg="#d8d8d8", borderwidth=0,
                                      command=self.toggle_shuffle)
         if not self.img_shuffle_off:
             self.shuffle_btn.config(text="Shuffle Off")
@@ -107,7 +107,7 @@ class WADX:
             bar = self.eq_canvas.create_rectangle(x0, y0, x1, y1, fill="#4caf50", outline="")
             self.eq_bars.append(bar)
 
-        self.playlist_frame = tk.Frame(root, bg="#ece9d8")
+        self.playlist_frame = tk.Frame(root, bg="#d8d8d8")
         self.playlist_frame.pack(fill=tk.BOTH, expand=False, pady=(0, 10))
 
         self.playlist_scrollbar = tk.Scrollbar(self.playlist_frame)
@@ -119,34 +119,34 @@ class WADX:
 
         self.playlist_scrollbar.config(command=self.playlist_listbox.yview)
 
-        self.buttons_panel = tk.Frame(root, background='#ece9d8')
+        self.buttons_panel = tk.Frame(root, background='#d8d8d8')
         self.buttons_panel.pack(pady=(0, 20))
 
-        self.add_songs_btn = tk.Button(self.buttons_panel, image=self.img_add, bg="#ece9d8",
+        self.add_songs_btn = tk.Button(self.buttons_panel, image=self.img_add, bg="#d8d8d8",
                                        command=self.add_songs)
         if not self.img_add:
             self.add_songs_btn.config(text="Add")
         self.add_songs_btn.pack(side=tk.LEFT, padx=5)
 
-        self.rename_song_btn = tk.Button(self.buttons_panel, image=self.img_rename, bg="#ece9d8",
+        self.rename_song_btn = tk.Button(self.buttons_panel, image=self.img_rename, bg="#d8d8d8",
                                         command=self.rename_song)
         if not self.img_rename:
             self.rename_song_btn.config(text="Rename")
         self.rename_song_btn.pack(side=tk.LEFT, padx=5)
 
-        self.delete_song_btn = tk.Button(self.buttons_panel, image=self.img_remove, bg="#ece9d8",
+        self.delete_song_btn = tk.Button(self.buttons_panel, image=self.img_remove, bg="#d8d8d8",
                                          command=self.delete_song)
         if not self.img_remove:
             self.delete_song_btn.config(text="Remove")
         self.delete_song_btn.pack(side=tk.LEFT, padx=5)
 
-        self.move_up_btn = tk.Button(self.buttons_panel, image=self.img_up, bg="#ece9d8",
+        self.move_up_btn = tk.Button(self.buttons_panel, image=self.img_up, bg="#d8d8d8",
                                      command=self.move_song_up)
         if not self.img_up:
             self.move_up_btn.config(text="Up")
         self.move_up_btn.pack(side=tk.LEFT, padx=5)
 
-        self.move_down_btn = tk.Button(self.buttons_panel, image=self.img_down, bg="#ece9d8",
+        self.move_down_btn = tk.Button(self.buttons_panel, image=self.img_down, bg="#d8d8d8",
                                        command=self.move_song_down)
         if not self.img_down:
             self.move_down_btn.config(text="Down")
@@ -532,9 +532,9 @@ class WADX:
         self.find_window = tk.Toplevel(self.root)
         self.find_window.title("Find")
         self.find_window.geometry("300x100")
-        self.find_window.config(bg="#ece9d8")
+        self.find_window.config(bg="#d8d8d8")
 
-        label = tk.Label(self.find_window, text="Find song:", bg="#ece9d8")
+        label = tk.Label(self.find_window, text="Find song:", bg="#d8d8d8")
         label.pack(pady=5)
 
         self.find_entry = tk.Entry(self.find_window)
@@ -557,7 +557,7 @@ class WADX:
         self.find_window.lift()
 
     def show_about(self):
-        messagebox.showinfo("About", "JamVault Beta\nVersion: 0.8.0\nCreated by: Daniel Armstrong\n(C)2025 Daniel Armstrong")
+        messagebox.showinfo("About", "JamVault Beta\nVersion: 0.8.1\nCreated by: Daniel Armstrong\n(C)2025 Daniel Armstrong")
 
     def on_close(self):
         self.player.stop()
